@@ -1,0 +1,122 @@
+# Frontend Structure
+
+## Overview
+
+Video streaming frontend for uploading, listing and viewing videos in HLS format.
+
+## Tech Stack
+
+- **React** 18+ with TypeScript
+- **React Router** - routing
+- **Hls.js** - HLS video playback
+- **Tailwind CSS** - styling
+- **i18next** - internationalization
+- **Vite** - build tool
+
+## Routes
+
+| Path       | Component      | Description                  |
+|----------- | -------------- | ---------------------------- |
+| `/`        | UploadPage     | Video upload page            |
+| `/videos`  | VideoListPage  | List of all uploaded videos  |
+| `/v/:id`   | VideoPage      | Video player page            |
+
+## API Endpoints (used by frontend)
+
+### POST /api/upload
+
+Upload video file.
+
+**Request:**
+
+- `Content-Type: multipart/form-data`
+- Body: `file` (video file, max 1GB)
+- Allowed: `.mp4`, `.mov`, `.mkv`, `.webm`
+
+**Response:**
+
+```json
+{
+  "id": "uuid",
+  "url": "/v/{id}"
+}
+```
+
+### GET /api/videos
+
+Get list of all videos for the `/videos` page.
+
+**Response:**
+
+```json
+[
+  {
+    "id": "uuid",
+    "status": "processing" | "ready" | "error",
+    "streamUrl": "/streams/{id}/master.m3u8",
+    "createdAt": "2024-01-01T00:00:00Z"
+  }
+]
+```
+
+### GET /api/video/:id
+
+Get video status and info. The frontend polls this endpoint (every few seconds) until status is either `ready` or `error`.
+
+**Response:**
+
+```json
+{
+  "id": "uuid",
+  "status": "processing" | "ready" | "error",
+  "streamUrl": "/streams/{id}/master.m3u8",
+  "createdAt": "2024-01-01T00:00:00Z",
+  "error": "optional error description"
+}
+```
+
+### GET /streams/:id/master.m3u8
+
+HLS playlist for video playback (handled by backend static file server).
+
+## Components & Files Structure
+
+```text
+frontend/
+├── src/
+│   ├── App.tsx              # Main app with Router and layout
+│   ├── main.tsx             # Entry point
+│   ├── index.css            # Global styles (Tailwind setup)
+│   ├── assets/
+│   │   └── react.svg        # Sample asset
+│   ├── components/
+│   │   ├── Navbar.tsx       # Navigation + language selector
+│   │   └── VideoCard.tsx    # Card for video list/grid
+│   ├── pages/
+│   │   ├── UploadPage.tsx   # Upload page with progress and result
+│   │   ├── VideoPage.tsx    # Video player page (HLS)
+│   │   └── VideoListPage.tsx# List of uploaded videos
+│   ├── etc/
+│   │   └── utils.ts         # Logger utility with ENV-based levels
+│   └── i18n/
+│       ├── config.ts        # i18n configuration
+│       └── locales/         # Translation files (en, ru, ja, ko, es, zh, fr, de, pt)
+└── dist/                    # Production build output (generated)
+```
+
+## Features
+
+- **Upload**: Drag & drop or click to select video, max 1GB
+- **Processing**: Polls status until video is ready
+- **Playback**: HLS streaming with Hls.js (native on Safari)
+- **Video list**: `/videos` page fetching `/api/videos` and rendering `VideoCard` grid
+- **i18n**: 9 languages supported
+- **Copy link**: Share video URL after upload
+- **Logging**: Centralized logger (`etc/utils.ts`) controlled by `VITE_APP_DEBUG`
+
+## Environment Variables
+
+```text
+VITE_APP_API_URL=http://localhost:8080
+VITE_APP_DEBUG=true
+```

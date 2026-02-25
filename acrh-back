@@ -1,44 +1,51 @@
 # Backend Architecture
 
 ## Overview
-Video streaming backend that processes uploaded videos into HLS format for streaming.
+
+Video streaming backend that processes uploaded videos into HLS format for streaming and serves both API and HLS static content.
 
 ## Tech Stack
+
 - **Go** 1.24+
 - **Chi** - HTTP router
 - **FFmpeg** - video encoding
 - **YAML** - configuration
 
 ## Project Structure
-```
+
+```text
 backend/
-├── main.go              # Entry point, dependency injection
+├── main.go              # Entry point, config loading, graceful shutdown
 ├── config/
-│   ├── config.go        # Config loading
+│   ├── config.go        # Config loading helpers
 │   └── config.yaml      # Configuration file
 ├── server/
-│   ├── server.go        # Server struct
+│   ├── server.go        # Server struct and wiring
 │   ├── router.go        # Routes + middleware
 │   └── handlers.go      # HTTP handlers
 ├── processor/
 │   └── processor.go     # Video processing orchestration
 ├── storage/
-│   └── storage.go      # File system operations
+│   └── storage.go       # File system operations
 ├── ffmpeg/
 │   └── ffmpeg.go        # FFmpeg wrapper
-└── models/
-    └── video.go         # Data models
+├── models/
+│   └── video.go         # Data models
+├── @videos/             # Generated video data (raw + HLS)
+└── cleanup.sh           # Helper script to clean generated video data
 ```
 
 ## Dependency Flow
-```
+
+```text
 main.go
-  ├── config.Load()
+  ├── loadConfig()
+  │    └── config.LoadFromDir()
   ├── storage.NewStorage()
   ├── ffmpeg.NewEncoder()
   ├── processor.NewProcessor()
   └── server.NewServer()
-       └── server.Router()
+       └── Router()
             ├── handlers (upload, list, get)
             └── static file server (HLS)
 ```
@@ -46,13 +53,16 @@ main.go
 ## API Endpoints
 
 ### POST /api/upload
+
 Upload and process video.
 
 **Request:**
+
 - `Content-Type: multipart/form-data`
 - Body: `file` (video file)
 
 **Response:**
+
 ```json
 {
   "id": "uuid",
@@ -61,9 +71,11 @@ Upload and process video.
 ```
 
 ### GET /api/videos
+
 List all videos.
 
 **Response:**
+
 ```json
 [
   {
@@ -76,9 +88,11 @@ List all videos.
 ```
 
 ### GET /api/video/:id
+
 Get video info and status.
 
 **Response:**
+
 ```json
 {
   "id": "uuid",
@@ -90,16 +104,19 @@ Get video info and status.
 ```
 
 ### GET /streams/:id/*
+
 HLS static files (master.m3u8, segments).
 
 ## Video Processing Flow
+
 1. Upload saves raw file to `{videos_dir}/raw/{id}.mp4`
-2. Processor creates video entry with status "processing"
+2. Processor creates video entry with status `"processing"`
 3. FFmpeg converts to HLS in `{videos_dir}/hls/{id}/`
-4. On success, status changes to "ready"
+4. On success, status changes to `"ready"`
 5. Frontend polls `/api/video/:id` until ready
 
 ## Configuration (config.yaml)
+
 ```yaml
 server:
   host: "0.0.0.0"
@@ -127,16 +144,18 @@ ffmpeg:
 ## Data Models
 
 ### Video
+
 ```go
 type Video struct {
     ID        string      // UUID
-    Status    VideoStatus // "processing" | "ready"
+    Status    VideoStatus // "processing" | "ready" | "error"
     Path      string      // HLS directory path
     CreatedAt time.Time
 }
 ```
 
 ## Notes
+
 - Videos are stored in memory (map), not persisted to DB
 - On restart, videos are reloaded from filesystem
 - No authentication/authorization
