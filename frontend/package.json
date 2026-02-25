@@ -1,7 +1,11 @@
 {
   "name": "frontend",
+  "author": "Vladimir Kobranov",
+  "email": "josephclturok@gmail.com",
+  "description": "A high-performance private video streaming service with on-the-fly HLS transcoding and real-time processing.",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

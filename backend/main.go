@@ -17,6 +17,8 @@ import (
 	"labbase-streaming/backend/storage"
 )
 
+const Version = "1.0.0"
+
 func main() {
 	cfg, err := loadConfig()
 	if err != nil {
@@ -43,6 +45,11 @@ func main() {
 	}
 
 	go func() {
+		log.Printf("\033[36m" + `
+   __        __     __                      
+  / /  ___ _/ /  __/ /  ___ ____ ___        
+ / /__/ _ '/ _ \/ _  / / _ '(_-</ -_)       
+/____/\_,_/_.__/\_,_/  \_,_/___/\__/  v` + Version + "\033[0m")
 		log.Printf("Starting server on %s...", cfg.Server.Address())
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("failed to start server: %v", err)
