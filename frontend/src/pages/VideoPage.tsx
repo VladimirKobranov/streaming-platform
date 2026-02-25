@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Hls from "hls.js";
 import { Loader2, AlertCircle } from "lucide-react";
+import log from "../etc/utils";
 
 export default function VideoPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,25 +17,35 @@ export default function VideoPage() {
 
     const checkStatus = async () => {
       try {
+        log.d("Polling video status for ID:", id);
         const response = await fetch(`http://localhost:8080/api/video/${id}`);
-        if (!response.ok) throw new Error("Video not found");
+        if (!response.ok) {
+          log.e(
+            "Status API call failed for ID:",
+            id,
+            "Status:",
+            response.status,
+          );
+          throw new Error("Video not found");
+        }
 
         const data = await response.json();
+        log.v("Received video status:", data.status);
         setStatus(data.status);
 
         if (data.status === "ready" || data.status === "processing") {
-          // Keep polling if processing, but we can try to initialize player anyway
-          // since task says "start playing before encoding finishes"
-          // Actually, we'll initialize if processing or ready.
           if (data.status === "processing") {
-            // Keep polling to update status text, but start player
+            log.d("Video is still processing, continuing poll...");
           } else {
+            log.i("Video is ready. Stopping poll.");
             clearInterval(pollInterval);
           }
         }
       } catch (err) {
+        const msg = err instanceof Error ? err.message : "Failed to load video";
+        log.e("Poll error for video", id, ":", msg);
         setStatus("error");
-        setError(err instanceof Error ? err.message : "Failed to load video");
+        setError(msg);
         clearInterval(pollInterval);
       }
     };
@@ -50,20 +61,26 @@ export default function VideoPage() {
       const hlsUrl = `http://localhost:8080/streams/${id}/master.m3u8`;
 
       if (Hls.isSupported()) {
+        log.i("Initializing HLS.js player for video:", id);
         const hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
         });
+
+        log.d("Loading source:", hlsUrl);
         hls.loadSource(hlsUrl);
         hls.attachMedia(videoRef.current);
+
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          // videoRef.current?.play();
+          log.i("HLS manifest parsed. Autoplay starting...");
+          videoRef.current?.play(); // start playing when ready
         });
 
         hls.on(Hls.Events.ERROR, (_event, data) => {
           if (data.fatal) {
-            // If it's a 404, maybe it's just not ready yet (processing hasn't written master.m3u8)
-            // We'll let it retry or just wait for next poll
+            log.e("Fatal HLS error encountered:", data.type, data.details);
+          } else {
+            log.w("Non-fatal HLS error:", data.type, data.details);
           }
         });
 
@@ -71,6 +88,7 @@ export default function VideoPage() {
       } else if (
         videoRef.current.canPlayType("application/vnd.apple.mpegurl")
       ) {
+        log.i("Native HLS supported. Using native player.");
         videoRef.current.src = hlsUrl;
       }
     }
@@ -106,6 +124,7 @@ export default function VideoPage() {
           <video
             ref={videoRef}
             controls
+            muted // autoplay
             className="w-full rounded-lg bg-black max-h-[65vh]"
           />
         )}

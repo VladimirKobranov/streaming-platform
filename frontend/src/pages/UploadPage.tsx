@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Upload, FileVideo, CheckCircle, Copy, Loader2 } from "lucide-react";
+import log from "../etc/utils";
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,18 +13,26 @@ export default function UploadPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selected = e.target.files[0];
+      log.d("File selected:", selected.name, "Size:", selected.size, "bytes");
+
       if (selected.size > 1024 * 1024 * 1024) {
+        log.w("File selection rejected: Size exceeds 1GB limit", selected.size);
         setError("File size exceeds 1GB limit");
         return;
       }
+
       setFile(selected);
       setError(null);
     }
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      log.w("Attempted upload without selecting a file");
+      return;
+    }
 
+    log.i("Preparing to upload:", file.name);
     setUploading(true);
     setError(null);
 
@@ -31,17 +40,28 @@ export default function UploadPage() {
     formData.append("file", file);
 
     try {
+      log.d("Sending POST request to /api/upload...");
       const response = await fetch("http://localhost:8080/api/upload", {
         method: "POST",
         body: formData,
       });
 
-      if (!response.ok) throw new Error("Upload failed");
+      if (!response.ok) {
+        log.e(
+          "Upload failed with status:",
+          response.status,
+          response.statusText,
+        );
+        throw new Error("Upload failed");
+      }
 
       const data = await response.json();
+      log.i("Upload completed successfully. ID:", data.id);
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      log.e("Upload error encountered:", msg);
+      setError(msg);
     } finally {
       setUploading(false);
     }
@@ -50,6 +70,7 @@ export default function UploadPage() {
   const copyToClipboard = () => {
     if (result) {
       const fullUrl = `${window.location.origin}${result.url}`;
+      log.d("Copying link to clipboard:", fullUrl);
       navigator.clipboard.writeText(fullUrl);
       alert("Link copied to clipboard!");
     }

@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { PlayCircle } from "lucide-react";
+import log from "../etc/utils";
 
 export default function Navbar() {
+  log.v("Navbar component rendered");
   return (
     <nav className="sticky top-0 z-10 px-8 py-3 bg-brand-bg/80 backdrop-blur-xl border-b border-white/10">
       <div className="container flex justify-between items-center !px-0">

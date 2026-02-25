@@ -2,8 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import UploadPage from "./pages/UploadPage";
 import VideoPage from "./pages/VideoPage";
+import log from "./etc/utils";
 
 function App() {
+  log.d("App component rendered");
   return (
     <Router>
       <Navbar />
