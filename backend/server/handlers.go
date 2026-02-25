@@ -6,7 +6,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -27,12 +29,27 @@ func (s *Server) handleUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, _, err := r.FormFile("file")
+	file, header, err := r.FormFile("file")
 	if err != nil {
 		http.Error(w, "Failed to get file", http.StatusBadRequest)
 		return
 	}
 	defer file.Close()
+
+	if len(s.config.Upload.AllowedExtensions) > 0 {
+		ext := strings.ToLower(filepath.Ext(header.Filename))
+		allowed := false
+		for _, a := range s.config.Upload.AllowedExtensions {
+			if strings.ToLower(a) == ext {
+				allowed = true
+				break
+			}
+		}
+		if !allowed {
+			http.Error(w, "File type not allowed", http.StatusBadRequest)
+			return
+		}
+	}
 
 	videoID := uuid.New().String()
 	rawPath := s.storage.GetRawPath(videoID)
@@ -75,12 +92,16 @@ func (s *Server) handleGetVideo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	resp := map[string]interface{}{
 		"id":        video.ID,
 		"status":    video.Status,
 		"streamUrl": fmt.Sprintf("/streams/%s/master.m3u8", video.ID),
 		"createdAt": video.CreatedAt,
-	})
+	}
+	if video.Error != "" {
+		resp["error"] = video.Error
+	}
+	json.NewEncoder(w).Encode(resp)
 }
 
 func (s *Server) handleListVideos(w http.ResponseWriter, r *http.Request) {

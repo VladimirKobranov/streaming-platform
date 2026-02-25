@@ -16,6 +16,7 @@ type Processor struct {
 	encoder *ffmpeg.Encoder
 	videos  map[string]*models.Video
 	mu      sync.RWMutex
+	sem     chan struct{}
 }
 
 func NewProcessor(s *storage.Storage, e *ffmpeg.Encoder) *Processor {
@@ -23,6 +24,7 @@ func NewProcessor(s *storage.Storage, e *ffmpeg.Encoder) *Processor {
 		storage: s,
 		encoder: e,
 		videos:  make(map[string]*models.Video),
+		sem:     make(chan struct{}, 2),
 	}
 	p.LoadExistingVideos()
 	return p
@@ -86,16 +88,31 @@ func (p *Processor) ListVideos() []*models.Video {
 
 func (p *Processor) ProcessVideo(id string) {
 	go func() {
+		p.sem <- struct{}{}
+		defer func() { <-p.sem }()
+
 		inputPath := p.storage.GetRawPath(id)
 		outputDir := p.storage.GetHLSPath(id)
 
 		if err := p.storage.CreateHLSDir(id); err != nil {
 			log.Printf("failed to create HLS dir for %s: %v", id, err)
+			p.mu.Lock()
+			if v, ok := p.videos[id]; ok {
+				v.Status = models.StatusError
+				v.Error = "failed to create HLS directory"
+			}
+			p.mu.Unlock()
 			return
 		}
 
 		if err := p.encoder.ConvertToHLS(inputPath, outputDir); err != nil {
 			log.Printf("failed to process video %s: %v", id, err)
+			p.mu.Lock()
+			if v, ok := p.videos[id]; ok {
+				v.Status = models.StatusError
+				v.Error = err.Error()
+			}
+			p.mu.Unlock()
 			return
 		}
 

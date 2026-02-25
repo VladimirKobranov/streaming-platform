@@ -39,7 +39,7 @@ main.go
   ├── processor.NewProcessor()
   └── server.NewServer()
        └── server.Router()
-            ├── handlers (upload, list, get, delete)
+            ├── handlers (upload, list, get)
             └── static file server (HLS)
 ```
 
@@ -56,7 +56,7 @@ Upload and process video.
 ```json
 {
   "id": "uuid",
-  "url": "/streams/{id}/master.m3u8"
+  "url": "/v/{id}"
 }
 ```
 
@@ -65,17 +65,14 @@ List all videos.
 
 **Response:**
 ```json
-{
-  "videos": [
-    {
-      "id": "uuid",
-      "status": "ready",
-      "streamUrl": "/streams/{id}/master.m3u8",
-      "createdAt": "2024-01-01T00:00:00Z"
-    }
-  ],
-  "total": 1
-}
+[
+  {
+    "id": "uuid",
+    "status": "ready" | "processing" | "error",
+    "streamUrl": "/streams/{id}/master.m3u8",
+    "createdAt": "2024-01-01 15:04:05"
+  }
+]
 ```
 
 ### GET /api/video/:id
@@ -85,19 +82,10 @@ Get video info and status.
 ```json
 {
   "id": "uuid",
-  "status": "ready" | "processing",
+  "status": "ready" | "processing" | "error",
   "streamUrl": "/streams/{id}/master.m3u8",
-  "createdAt": "2024-01-01T00:00:00Z"
-}
-```
-
-### DELETE /api/video/:id
-Delete video and all related files.
-
-**Response:**
-```json
-{
-  "message": "Video deleted successfully"
+  "createdAt": "2024-01-01T00:00:00Z",
+  "error": "optional error description"
 }
 ```
 

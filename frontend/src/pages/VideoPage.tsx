@@ -37,15 +37,32 @@ export default function VideoPage() {
 
         const data = await response.json();
         log.v("Received video status:", data.status);
-        setStatus(data.status);
 
-        if (data.status === "ready" || data.status === "processing") {
-          if (data.status === "processing") {
-            log.d("Video is still processing, continuing poll...");
-          } else {
-            log.i("Video is ready. Stopping poll.");
-            clearInterval(pollInterval);
-          }
+        const backendStatus = data.status as
+          | "processing"
+          | "ready"
+          | "loading"
+          | "error";
+
+        if (backendStatus === "error") {
+          log.e("Backend reported error status for video", id, ":", data.error);
+          setStatus("error");
+          setError(
+            typeof data.error === "string" && data.error.length > 0
+              ? data.error
+              : t("video.error_failed"),
+          );
+          clearInterval(pollInterval);
+          return;
+        }
+
+        setStatus(backendStatus);
+
+        if (backendStatus === "ready") {
+          log.i("Video is ready. Stopping poll.");
+          clearInterval(pollInterval);
+        } else if (backendStatus === "processing") {
+          log.d("Video is still processing, continuing poll...");
         }
       } catch (err) {
         const msg =
@@ -86,6 +103,9 @@ export default function VideoPage() {
         hls.on(Hls.Events.ERROR, (_event, data) => {
           if (data.fatal) {
             log.e("Fatal HLS error encountered:", data.type, data.details);
+            setStatus("error");
+            setError(t("video.error_failed"));
+            hls.destroy();
           } else {
             log.w("Non-fatal HLS error:", data.type, data.details);
           }
@@ -99,7 +119,7 @@ export default function VideoPage() {
         videoRef.current.src = hlsUrl;
       }
     }
-  }, [status, id]);
+  }, [status, id, t]);
 
   return (
     <div className="container animate-fade mt-6">
@@ -158,7 +178,11 @@ export default function VideoPage() {
           <p className="text-secondary">
             {status === "processing"
               ? t("video.status_processing")
-              : t("video.status_ready")}
+              : status === "loading"
+                ? t("video.checking_status")
+                : status === "error"
+                  ? t("video.error_failed")
+                  : t("video.status_ready")}
           </p>
         </div>
       </div>

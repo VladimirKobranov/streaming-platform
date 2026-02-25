@@ -31,20 +31,21 @@ Upload video file.
 ```json
 {
   "id": "uuid",
-  "url": "/streams/{id}/master.m3u8"
+  "url": "/v/{id}"
 }
 ```
 
 ### GET /api/video/:id
-Get video status and info. Polls every 2 seconds until ready.
+Get video status and info. Polls every 2 seconds until status is either `ready` or `error`.
 
 **Response:**
 ```json
 {
   "id": "uuid",
-  "status": "processing" | "ready",
+  "status": "processing" | "ready" | "error",
   "streamUrl": "/streams/{id}/master.m3u8",
-  "createdAt": "2024-01-01T00:00:00Z"
+  "createdAt": "2024-01-01T00:00:00Z",
+  "error": "optional error description"
 }
 ```
 

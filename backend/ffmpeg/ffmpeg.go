@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"time"
+	"context"
 
 	"labbase-streaming/backend/config"
 )
@@ -31,7 +33,10 @@ func (e *Encoder) ConvertToHLS(inputPath, outputDir string) error {
 		masterPlaylist,
 	}
 
-	cmd := exec.Command("ffmpeg", args...)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("ffmpeg error: %v, output: %s", err, string(output))
