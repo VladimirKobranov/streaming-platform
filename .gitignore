@@ -1,6 +1,9 @@
 # Binary distributions
 /backend/backend
 /backend/main
+/backend/tmp/*
+!/backend/tmp/.gitkeep
+
 
 # Node.js
 node_modules/
