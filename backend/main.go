@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
+	"time"
 
 	"labbase-streaming/backend/config"
 	"labbase-streaming/backend/ffmpeg"
@@ -33,10 +37,32 @@ func main() {
 	p := processor.NewProcessor(s, e)
 	srv := server.NewServer(p, s, cfg)
 
-	log.Printf("Starting server on %s...", cfg.Server.Address())
-	if err := http.ListenAndServe(cfg.Server.Address(), srv.Router()); err != nil {
-		log.Fatalf("failed to start server: %v", err)
+	httpServer := &http.Server{
+		Addr:    cfg.Server.Address(),
+		Handler: srv.Router(),
 	}
+
+	go func() {
+		log.Printf("Starting server on %s...", cfg.Server.Address())
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("failed to start server: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := httpServer.Shutdown(ctx); err != nil {
+		log.Printf("Server forced to shutdown: %v", err)
+	}
+
+	log.Println("Server exited")
 }
 
 func isAbsolutePath(path string) bool {

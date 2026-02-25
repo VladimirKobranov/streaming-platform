@@ -2,8 +2,7 @@ package server
 
 import (
 	"net/http"
-	"os"
-	"strings"
+	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -18,12 +17,13 @@ func (s *Server) Router() http.Handler {
 	r.Use(corsMiddleware)
 
 	r.Route("/api", func(r chi.Router) {
+		r.Get("/health", s.handleHealth)
 		r.Post("/upload", s.handleUpload)
 		r.Get("/video/{id}", s.handleGetVideo)
 	})
 
-	hlsDir := strings.TrimSuffix(s.storage.GetBaseDir(), string(os.PathSeparator)) + "/hls"
-	FileServer(r, "/streams", http.Dir(hlsDir))
+	hlsDir := filepath.Join(s.storage.GetBaseDir(), "hls")
+	r.Handle("/streams/*", http.StripPrefix("/streams", http.FileServer(http.Dir(hlsDir))))
 
 	return r
 }
@@ -40,25 +40,5 @@ func corsMiddleware(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(w, r)
-	})
-}
-
-// FileServer sets up a static file server for a chi router.
-func FileServer(r chi.Router, path string, root http.FileSystem) {
-	if strings.ContainsAny(path, "{}*") {
-		panic("FileServer does not permit any URL parameters.")
-	}
-
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
-		path += "/"
-	}
-	path += "*"
-
-	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
-		rctx := chi.RouteContext(r.Context())
-		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
-		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
-		fs.ServeHTTP(w, r)
 	})
 }

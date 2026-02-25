@@ -11,6 +11,13 @@ import (
 	"github.com/google/uuid"
 )
 
+func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"status": "ok",
+	})
+}
+
 func (s *Server) handleUpload(w http.ResponseWriter, r *http.Request) {
 	maxSize := s.config.Upload.MaxSizeBytes()
 	r.Body = http.MaxBytesReader(w, r.Body, maxSize)
@@ -46,7 +53,7 @@ func (s *Server) handleUpload(w http.ResponseWriter, r *http.Request) {
 
 	response := map[string]string{
 		"id":  videoID,
-		"url": fmt.Sprintf("/streams/%s/master.m3u8", videoID),
+		"url": fmt.Sprintf("/v/%s", videoID),
 	}
 
 	w.Header().Set("Content-Type", "application/json")

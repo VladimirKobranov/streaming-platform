@@ -2,6 +2,7 @@ package processor
 
 import (
 	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -85,6 +86,12 @@ func (p *Processor) ProcessVideo(id string) {
 		if err := p.encoder.ConvertToHLS(inputPath, outputDir); err != nil {
 			log.Printf("failed to process video %s: %v", id, err)
 			return
+		}
+
+		if err := os.Remove(inputPath); err != nil {
+			log.Printf("failed to delete raw file for %s: %v", id, err)
+		} else {
+			log.Printf("cleaned up raw file for %s", id)
 		}
 
 		p.mu.Lock()

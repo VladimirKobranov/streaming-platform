@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Upload, FileVideo, CheckCircle, Copy, Loader2 } from "lucide-react";
+import { useState, useRef } from "react";
+import { Upload, FileVideo, CheckCircle, Copy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import log from "../etc/utils";
 
@@ -7,10 +7,12 @@ export default function UploadPage() {
   const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<{ id: string; url: string } | null>(
     null,
   );
   const [error, setError] = useState<string | null>(null);
+  const xhrRef = useRef<XMLHttpRequest | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -25,10 +27,11 @@ export default function UploadPage() {
 
       setFile(selected);
       setError(null);
+      setProgress(0);
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     if (!file) {
       log.w("Attempted upload without selecting a file");
       return;
@@ -37,38 +40,52 @@ export default function UploadPage() {
     log.i("Preparing to upload:", file.name);
     setUploading(true);
     setError(null);
+    setProgress(0);
 
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-      log.d("Sending POST request to /api/upload...");
-      const response = await fetch(
-        `${import.meta.env.VITE_APP_API_URL}/api/upload`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+    const xhr = new XMLHttpRequest();
+    xhrRef.current = xhr;
 
-      if (!response.ok) {
-        log.e(
-          "Upload failed with status:",
-          response.status,
-          response.statusText,
-        );
-        throw new Error("Upload failed");
+    xhr.upload.addEventListener("progress", (e) => {
+      if (e.lengthComputable) {
+        const percent = Math.round((e.loaded / e.total) * 100);
+        setProgress(percent);
+        log.d("Upload progress:", percent + "%");
       }
+    });
 
-      const data = await response.json();
-      log.i("Upload completed successfully. ID:", data.id);
-      setResult(data);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      log.e("Upload error encountered:", msg);
-      setError(msg);
-    } finally {
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const data = JSON.parse(xhr.responseText);
+        log.i("Upload completed successfully. ID:", data.id);
+        setResult(data);
+      } else {
+        log.e("Upload failed with status:", xhr.status, xhr.statusText);
+        setError("Upload failed");
+      }
       setUploading(false);
+    });
+
+    xhr.addEventListener("error", () => {
+      log.e("Upload error encountered");
+      setError("Upload failed");
+      setUploading(false);
+    });
+
+    xhr.addEventListener("abort", () => {
+      log.i("Upload cancelled");
+      setUploading(false);
+    });
+
+    xhr.open("POST", `${import.meta.env.VITE_APP_API_URL}/api/upload`);
+    xhr.send(formData);
+  };
+
+  const cancelUpload = () => {
+    if (xhrRef.current) {
+      xhrRef.current.abort();
     }
   };
 
@@ -131,23 +148,36 @@ export default function UploadPage() {
               <p className="text-brand-error text-sm text-center">{error}</p>
             )}
 
-            <button
-              className="btn w-full py-4"
-              disabled={!file || uploading}
-              onClick={handleUpload}
-            >
-              {uploading ? (
-                <>
-                  <Loader2 className="animate-spin" />
-                  {t("upload.btn_uploading")}
-                </>
-              ) : (
-                <>
-                  <Upload size={20} />
-                  {t("upload.btn_start")}
-                </>
-              )}
-            </button>
+            {uploading ? (
+              <div className="flex flex-col gap-3">
+                <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-brand-primary h-full transition-all duration-300 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-secondary">
+                    {progress}% uploaded
+                  </span>
+                  <button
+                    onClick={cancelUpload}
+                    className="text-sm text-brand-error hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                className="btn w-full py-4"
+                disabled={!file}
+                onClick={handleUpload}
+              >
+                <Upload size={20} />
+                {t("upload.btn_start")}
+              </button>
+            )}
           </div>
         ) : (
           <div className="text-center flex flex-col gap-6 py-4">
