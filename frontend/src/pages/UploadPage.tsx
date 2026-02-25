@@ -54,7 +54,7 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="container animate-fade" style={{ marginTop: '4rem' }}>
+    <div className="container animate-fade" style={{ marginTop: '1.5rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <h1>Upload & Stream</h1>
         <p className="text-secondary">Anonymous, high-quality, instant HLS streaming.</p>

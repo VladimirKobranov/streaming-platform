@@ -74,7 +74,7 @@ export default function VideoPage() {
 
   return (
     <div className="container animate-fade">
-      <div className="card" style={{ padding: '1rem', overflow: 'hidden', minHeight: '400px', display: 'flex', flexDirection: 'column' }}>
+      <div className="card" style={{ padding: '0.75rem', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {status === 'loading' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
             <Loader2 className="animate-spin" size={48} color="var(--primary-color)" />
@@ -87,7 +87,7 @@ export default function VideoPage() {
                 <video 
                     ref={videoRef} 
                     controls 
-                    style={{ width: '100%', borderRadius: '0.5rem', background: '#000', maxHeight: '70vh' }}
+                    style={{ width: '100%', borderRadius: '0.5rem', background: '#000', maxHeight: '65vh' }}
                 />
                 <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0,0,0,0.6)', padding: '0.5rem 1rem', borderRadius: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.1)' }}>
                     <div className="animate-pulse" style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary-color)' }} />
@@ -100,7 +100,7 @@ export default function VideoPage() {
             <video 
                 ref={videoRef} 
                 controls 
-                style={{ width: '100%', borderRadius: '0.5rem', background: '#000', maxHeight: '70vh' }}
+                style={{ width: '100%', borderRadius: '0.5rem', background: '#000', maxHeight: '65vh' }}
             />
         )}
 

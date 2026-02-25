@@ -13,7 +13,7 @@ function App() {
           <Route path="/v/:id" element={<VideoPage />} />
         </Routes>
       </main>
-      <footer style={{ padding: '3rem', textAlign: 'center', opacity: 0.5, fontSize: '0.875rem' }}>
+      <footer style={{ padding: '1.5rem', textAlign: 'center', opacity: 0.5, fontSize: '0.875rem' }}>
         &copy; {new Date().getFullYear()} LabStream • Private Streaming Service
       </footer>
     </Router>
