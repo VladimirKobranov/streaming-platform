@@ -60,7 +60,9 @@ export default function VideoListPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <Loader2 className="animate-spin text-brand-primary" size={48} />
-          <p className="text-secondary">{t("common.loading", "Loading videos...")}</p>
+          <p className="text-secondary">
+            {t("common.loading", "Loading videos...")}
+          </p>
         </div>
       ) : error ? (
         <div className="card p-10 text-center flex flex-col items-center gap-4">
@@ -82,10 +84,16 @@ export default function VideoListPage() {
               {t("videos.no_videos", "No videos found")}
             </h3>
             <p className="text-secondary">
-              {t("videos.upload_first", "Upload your first video to see it here.")}
+              {t(
+                "videos.upload_first",
+                "Upload your first video to see it here.",
+              )}
             </p>
           </div>
-          <Link to="/" className="btn-primary px-8 py-3 rounded-xl font-semibold">
+          <Link
+            to="/"
+            className="btn-primary px-8 py-3 rounded-xl font-semibold"
+          >
             {t("upload.btn_start")}
           </Link>
         </div>
@@ -98,18 +106,20 @@ export default function VideoListPage() {
               className="group card !p-0 overflow-hidden hover:border-brand-primary transition-all duration-300 transform hover:-translate-y-1"
             >
               <div className="relative aspect-video bg-black/40 flex items-center justify-center">
-                <PlayCircle 
-                  className="text-white/20 group-hover:text-brand-primary group-hover:scale-110 transition-all duration-300" 
-                  size={64} 
+                <PlayCircle
+                  className="text-white/20 group-hover:text-brand-primary group-hover:scale-110 transition-all duration-300"
+                  size={64}
                 />
                 <div className="absolute top-3 right-3">
-                   <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-md border ${
-                     video.status === 'ready' 
-                      ? 'bg-brand-primary/20 text-brand-primary border-brand-primary/30' 
-                      : 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30'
-                   }`}>
-                     {video.status}
-                   </span>
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-md border ${
+                      video.status === "ready"
+                        ? "bg-brand-primary/20 text-brand-primary border-brand-primary/30"
+                        : "bg-yellow-500/20 text-yellow-500 border-yellow-500/30"
+                    }`}
+                  >
+                    {video.status}
+                  </span>
                 </div>
               </div>
               <div className="p-5">
@@ -120,7 +130,7 @@ export default function VideoListPage() {
                     </h3>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-4 text-xs text-secondary">
                   <div className="flex items-center gap-1.5">
                     <Calendar size={14} />
