@@ -1,0 +1,29 @@
+{
+  "common": {
+    "app_name": "LabStream",
+    "footer": "LabStream • プライベートストリーミングサービス",
+    "retry": "再試行",
+    "copy_success": "リンクをクリップボードにコピーしました！"
+  },
+  "upload": {
+    "title": "アップロード & ストリーム",
+    "subtitle": "匿名、高品質、インスタントHLSストリーミング。",
+    "dropzone_prompt": "クリックまたはドラッグしてアップロード",
+    "dropzone_help": "MP4, MOV, MKV, WEBM (最大1GB)",
+    "error_size": "ファイルサイズが1GB制限を超えています",
+    "btn_uploading": "アップロード中...",
+    "btn_start": "処理を開始",
+    "success_title": "アップロード成功！",
+    "success_subtitle": "ビデオを処理中です。以下のリンクを共有できます：",
+    "btn_go_to_video": "ビデオページへ"
+  },
+  "video": {
+    "checking_status": "ビデオステータスを確認中...",
+    "streaming_processing": "処理中にストリーミング中...",
+    "video_id": "ビデオID:",
+    "status_processing": "処理中です... シークに影響が出る場合があります。",
+    "status_ready": "再生準備完了。",
+    "error_not_found": "ビデオが見つかりません",
+    "error_failed": "ビデオの読み込みに失敗しました"
+  }
+}

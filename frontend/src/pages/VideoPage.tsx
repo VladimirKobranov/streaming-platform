@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Hls from "hls.js";
 import { Loader2, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import log from "../etc/utils";
 
 export default function VideoPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [status, setStatus] = useState<
@@ -28,7 +30,7 @@ export default function VideoPage() {
             "Status:",
             response.status,
           );
-          throw new Error("Video not found");
+          throw new Error(t("video.error_not_found"));
         }
 
         const data = await response.json();
@@ -44,7 +46,8 @@ export default function VideoPage() {
           }
         }
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to load video";
+        const msg =
+          err instanceof Error ? err.message : t("video.error_failed");
         log.e("Poll error for video", id, ":", msg);
         setStatus("error");
         setError(msg);
@@ -56,7 +59,7 @@ export default function VideoPage() {
     pollInterval = window.setInterval(checkStatus, 2000);
 
     return () => clearInterval(pollInterval);
-  }, [id]);
+  }, [id, t]);
 
   useEffect(() => {
     if ((status === "ready" || status === "processing") && videoRef.current) {
@@ -102,7 +105,7 @@ export default function VideoPage() {
         {status === "loading" && (
           <div className="flex-1 flex flex-col items-center justify-center gap-4">
             <Loader2 className="animate-spin text-brand-primary" size={48} />
-            <p className="text-secondary">Checking video status...</p>
+            <p className="text-secondary">{t("video.checking_status")}</p>
           </div>
         )}
 
@@ -116,7 +119,7 @@ export default function VideoPage() {
             <div className="absolute top-4 right-4 bg-black/60 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-md border border-white/10">
               <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
               <span className="text-xs font-semibold">
-                Streaming while processing...
+                {t("video.streaming_processing")}
               </span>
             </div>
           </div>
@@ -139,7 +142,7 @@ export default function VideoPage() {
               className="btn-secondary px-6 py-2 rounded-lg"
               onClick={() => window.location.reload()}
             >
-              Retry
+              {t("common.retry")}
             </button>
           </div>
         )}
@@ -147,11 +150,13 @@ export default function VideoPage() {
 
       <div className="mt-8 flex justify-between items-center">
         <div>
-          <h2 className="mb-1">Video ID: {id}</h2>
+          <h2 className="mb-1">
+            {t("video.video_id")} {id}
+          </h2>
           <p className="text-secondary">
             {status === "processing"
-              ? "Processing in progress... This may affect historical seeking."
-              : "Ready for playback."}
+              ? t("video.status_processing")
+              : t("video.status_ready")}
           </p>
         </div>
       </div>

@@ -1,0 +1,29 @@
+{
+  "common": {
+    "app_name": "LabStream",
+    "footer": "LabStream • 개인 스트리밍 서비스",
+    "retry": "재시도",
+    "copy_success": "링크가 클립보드에 복사되었습니다!"
+  },
+  "upload": {
+    "title": "업로드 및 스트림",
+    "subtitle": "익명, 고화질, 즉각적인 HLS 스트리밍.",
+    "dropzone_prompt": "클릭하거나 드래그하여 업로드",
+    "dropzone_help": "MP4, MOV, MKV, WEBM (최대 1GB)",
+    "error_size": "파일 크기가 1GB 제한을 초과합니다",
+    "btn_uploading": "업로드 중...",
+    "btn_start": "처리 시작",
+    "success_title": "성공적으로 업로드되었습니다!",
+    "success_subtitle": "비디오가 처리 중입니다. 아래 링크를 공유할 수 있습니다:",
+    "btn_go_to_video": "비디오 페이지로 이동"
+  },
+  "video": {
+    "checking_status": "비디오 상태 확인 중...",
+    "streaming_processing": "처리 중 스트리밍 중...",
+    "video_id": "비디오 ID:",
+    "status_processing": "처리가 진행 중입니다... 탐색에 영향을 줄 수 있습니다.",
+    "status_ready": "재생 준비 완료.",
+    "error_not_found": "비디오를 찾을 수 없습니다",
+    "error_failed": "비디오를 불러오지 못했습니다"
+  }
+}

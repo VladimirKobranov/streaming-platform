@@ -1,0 +1,29 @@
+{
+  "common": {
+    "app_name": "LabStream",
+    "footer": "LabStream • Service de streaming privé",
+    "retry": "Réessayer",
+    "copy_success": "Lien copié dans le presse-papiers !"
+  },
+  "upload": {
+    "title": "Télécharger & Diffuser",
+    "subtitle": "Streaming HLS anonyme, de haute qualité et instantané.",
+    "dropzone_prompt": "Cliquez ou faites glisser pour télécharger",
+    "dropzone_help": "MP4, MOV, MKV, WEBM (Max 1 Go)",
+    "error_size": "La taille du fichier dépasse la limite de 1 Go",
+    "btn_uploading": "Téléchargement...",
+    "btn_start": "Démarrer le traitement",
+    "success_title": "Téléchargement réussi !",
+    "success_subtitle": "Votre vidéo est en cours de traitement. Vous pouvez partager le lien ci-dessous :",
+    "btn_go_to_video": "Aller à la page vidéo"
+  },
+  "video": {
+    "checking_status": "Vérification du statut de la vidéo...",
+    "streaming_processing": "Diffusion pendant le traitement...",
+    "video_id": "ID de la vidéo :",
+    "status_processing": "Traitement en cours... Cela peut affecter la recherche historique.",
+    "status_ready": "Prêt pour la lecture.",
+    "error_not_found": "Vidéo non trouvée",
+    "error_failed": "Échec du chargement de la vidéo"
+  }
+}

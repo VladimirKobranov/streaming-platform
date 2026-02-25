@@ -1,0 +1,29 @@
+{
+  "common": {
+    "app_name": "LabStream",
+    "footer": "LabStream • 演示串流服务",
+    "retry": "重试",
+    "copy_success": "链接已复制到剪贴板！"
+  },
+  "upload": {
+    "title": "上传与串流",
+    "subtitle": "匿名、高质量、即时的 HLS 串流。",
+    "dropzone_prompt": "点击或拖拽上传",
+    "dropzone_help": "MP4, MOV, MKV, WEBM (最大1GB)",
+    "error_size": "文件大小超过1GB限制",
+    "btn_uploading": "上传中...",
+    "btn_start": "开始处理",
+    "success_title": "上传成功！",
+    "success_subtitle": "您的视频正在处理中。您可以分享以下链接：",
+    "btn_go_to_video": "前往视频页面"
+  },
+  "video": {
+    "checking_status": "检查视频状态...",
+    "streaming_processing": "正在处理中串流...",
+    "video_id": "视频 ID:",
+    "status_processing": "处理中... 这可能会影响历史进度寻找。",
+    "status_ready": "准备播放。",
+    "error_not_found": "未找到视频",
+    "error_failed": "视频加载失败"
+  }
+}

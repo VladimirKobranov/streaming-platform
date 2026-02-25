@@ -1,0 +1,29 @@
+{
+  "common": {
+    "app_name": "LabStream",
+    "footer": "LabStream • Servicio de Streaming Privado",
+    "retry": "Reintentar",
+    "copy_success": "¡Enlace copiado al portapapeles!"
+  },
+  "upload": {
+    "title": "Subir y Transmitir",
+    "subtitle": "Streaming HLS anónimo, de alta calidad e instantáneo.",
+    "dropzone_prompt": "Haga clic o arrastre para subir",
+    "dropzone_help": "MP4, MOV, MKV, WEBM (Máx 1GB)",
+    "error_size": "El tamaño del archivo supera el límite de 1GB",
+    "btn_uploading": "Subiendo...",
+    "btn_start": "Iniciar Procesamiento",
+    "success_title": "¡Subido con éxito!",
+    "success_subtitle": "Tu video se está procesando. Puedes compartir el enlace a continuación:",
+    "btn_go_to_video": "Ir a la página del video"
+  },
+  "video": {
+    "checking_status": "Comprobando el estado del video...",
+    "streaming_processing": "Transmitiendo mientras se procesa...",
+    "video_id": "ID del video:",
+    "status_processing": "Procesamiento en curso... Esto puede afectar la búsqueda.",
+    "status_ready": "Listo para reproducir.",
+    "error_not_found": "Video no encontrado",
+    "error_failed": "Error al cargar el video"
+  }
+}

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Upload, FileVideo, CheckCircle, Copy, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import log from "../etc/utils";
 
 export default function UploadPage() {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<{ id: string; url: string } | null>(
@@ -17,7 +19,7 @@ export default function UploadPage() {
 
       if (selected.size > 1024 * 1024 * 1024) {
         log.w("File selection rejected: Size exceeds 1GB limit", selected.size);
-        setError("File size exceeds 1GB limit");
+        setError(t("upload.error_size"));
         return;
       }
 
@@ -41,10 +43,13 @@ export default function UploadPage() {
 
     try {
       log.d("Sending POST request to /api/upload...");
-      const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/api/upload`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_API_URL}/api/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       if (!response.ok) {
         log.e(
@@ -72,17 +77,15 @@ export default function UploadPage() {
       const fullUrl = `${window.location.origin}${result.url}`;
       log.d("Copying link to clipboard:", fullUrl);
       navigator.clipboard.writeText(fullUrl);
-      alert("Link copied to clipboard!");
+      alert(t("common.copy_success"));
     }
   };
 
   return (
     <div className="container animate-fade mt-6">
       <div className="text-center mb-12">
-        <h1>Upload & Stream</h1>
-        <p className="text-secondary">
-          Anonymous, high-quality, instant HLS streaming.
-        </p>
+        <h1>{t("upload.title")}</h1>
+        <p className="text-secondary">{t("upload.subtitle")}</p>
       </div>
 
       <div className="card max-w-xl mx-auto">
@@ -113,9 +116,11 @@ export default function UploadPage() {
                 <div className="flex flex-col items-center gap-4">
                   <Upload size={48} className="text-brand-text-secondary" />
                   <div>
-                    <p className="font-semibold">Click or drag to upload</p>
+                    <p className="font-semibold">
+                      {t("upload.dropzone_prompt")}
+                    </p>
                     <p className="text-secondary">
-                      MP4, MOV, MKV, WEBM (Max 1GB)
+                      {t("upload.dropzone_help")}
                     </p>
                   </div>
                 </div>
@@ -134,12 +139,12 @@ export default function UploadPage() {
               {uploading ? (
                 <>
                   <Loader2 className="animate-spin" />
-                  Uploading...
+                  {t("upload.btn_uploading")}
                 </>
               ) : (
                 <>
                   <Upload size={20} />
-                  Start Processing
+                  {t("upload.btn_start")}
                 </>
               )}
             </button>
@@ -149,10 +154,8 @@ export default function UploadPage() {
             <div className="bg-brand-success/10 text-brand-success p-4 rounded-2xl inline-flex self-center">
               <CheckCircle size={48} />
             </div>
-            <h2>Successfully Uploaded!</h2>
-            <p className="text-secondary">
-              Your video is being processed. You can share the link below:
-            </p>
+            <h2>{t("upload.success_title")}</h2>
+            <p className="text-secondary">{t("upload.success_subtitle")}</p>
 
             <div className="bg-black/20 p-4 rounded-lg flex items-center gap-4 border border-white/10">
               <code className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">
@@ -168,7 +171,7 @@ export default function UploadPage() {
             </div>
 
             <a href={result.url} className="btn no-underline">
-              Go to Video Page
+              {t("upload.btn_go_to_video")}
             </a>
           </div>
         )}

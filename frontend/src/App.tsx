@@ -1,11 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Navbar from "./components/Navbar";
 import UploadPage from "./pages/UploadPage";
 import VideoPage from "./pages/VideoPage";
 import log from "./etc/utils";
 
 function App() {
+  const { t } = useTranslation();
   log.d("App component rendered");
+
   return (
     <Router>
       <Navbar />
@@ -16,7 +19,7 @@ function App() {
         </Routes>
       </main>
       <footer className="p-6 text-center opacity-50 text-sm border-t border-white/5">
-        &copy; {new Date().getFullYear()} LabStream • Private Streaming Service
+        &copy; {new Date().getFullYear()} {t("common.footer")}
       </footer>
     </Router>
   );
