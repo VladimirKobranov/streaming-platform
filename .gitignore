@@ -1,0 +1,28 @@
+# Binary distributions
+/backend/backend
+/backend/main
+
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Videos (Media storage)
+/videos/raw/*
+/videos/hls/*
+!/videos/raw/.gitkeep
+!/videos/hls/.gitkeep
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
