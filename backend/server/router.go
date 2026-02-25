@@ -26,6 +26,9 @@ func (s *Server) Router() http.Handler {
 	hlsDir := filepath.Join(s.storage.GetBaseDir(), "hls")
 	r.Handle("/streams/*", http.StripPrefix("/streams", http.FileServer(http.Dir(hlsDir))))
 
+	thumbsDir := filepath.Join(s.storage.GetBaseDir(), "thumbs")
+	r.Handle("/thumbnails/*", http.StripPrefix("/thumbnails", http.FileServer(http.Dir(thumbsDir))))
+
 	return r
 }
 

@@ -17,6 +17,7 @@ func NewStorage(baseDir string) (*Storage, error) {
 	dirs := []string{
 		filepath.Join(baseDir, "raw"),
 		filepath.Join(baseDir, "hls"),
+		filepath.Join(baseDir, "thumbs"),
 	}
 
 	for _, dir := range dirs {
@@ -34,6 +35,10 @@ func (s *Storage) GetRawPath(id string) string {
 
 func (s *Storage) GetHLSPath(id string) string {
 	return filepath.Join(s.baseDir, "hls", id)
+}
+
+func (s *Storage) GetThumbnailPath(id string) string {
+	return filepath.Join(s.baseDir, "thumbs", id+".jpg")
 }
 
 func (s *Storage) CreateHLSDir(id string) error {

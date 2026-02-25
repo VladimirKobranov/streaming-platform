@@ -98,6 +98,9 @@ func (s *Server) handleGetVideo(w http.ResponseWriter, r *http.Request) {
 		"streamUrl": fmt.Sprintf("/streams/%s/master.m3u8", video.ID),
 		"createdAt": video.CreatedAt,
 	}
+	if _, err := os.Stat(s.storage.GetThumbnailPath(video.ID)); err == nil {
+		resp["thumbnailUrl"] = fmt.Sprintf("/thumbnails/%s.jpg", video.ID)
+	}
 	if video.Error != "" {
 		resp["error"] = video.Error
 	}
@@ -117,15 +120,25 @@ func (s *Server) handleListVideos(w http.ResponseWriter, r *http.Request) {
 		Status    string `json:"status"`
 		StreamURL string `json:"streamUrl"`
 		CreatedAt string `json:"createdAt"`
+		// ThumbnailURL is optional and only set if the thumbnail file exists on disk
+		ThumbnailURL string `json:"thumbnailUrl,omitempty"`
 	}
 
 	response := make([]VideoResponse, 0, len(videos))
 	for _, v := range videos {
+		thumbURL := ""
+		thumbnailPath := s.storage.GetThumbnailPath(v.ID)
+		if _, err := os.Stat(thumbnailPath); err == nil {
+			thumbURL = fmt.Sprintf("/thumbnails/%s.jpg", v.ID)
+		} else {
+			// Optional: log or handle missing thumbnail
+		}
 		response = append(response, VideoResponse{
-			ID:        v.ID,
-			Status:    string(v.Status),
-			StreamURL: fmt.Sprintf("/streams/%s/master.m3u8", v.ID),
-			CreatedAt: v.CreatedAt.Format("2006-01-02 15:04:05"),
+			ID:           v.ID,
+			Status:       string(v.Status),
+			StreamURL:    fmt.Sprintf("/streams/%s/master.m3u8", v.ID),
+			CreatedAt:    v.CreatedAt.Format("2006-01-02 15:04:05"),
+			ThumbnailURL: thumbURL,
 		})
 	}
 

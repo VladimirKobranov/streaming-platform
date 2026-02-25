@@ -9,6 +9,7 @@ interface VideoData {
   status: string;
   streamUrl: string;
   createdAt: string;
+  thumbnailUrl?: string;
 }
 
 export default function VideoListPage() {
@@ -105,11 +106,31 @@ export default function VideoListPage() {
               to={`/v/${video.id}`}
               className="group card !p-0 overflow-hidden hover:border-brand-primary transition-all duration-300 transform hover:-translate-y-1"
             >
-              <div className="relative aspect-video bg-black/40 flex items-center justify-center">
-                <PlayCircle
-                  className="text-white/20 group-hover:text-brand-primary group-hover:scale-110 transition-all duration-300"
-                  size={64}
-                />
+              <div className="relative aspect-video bg-black/40">
+                {video.thumbnailUrl ? (
+                  <>
+                    <img
+                      src={`${import.meta.env.VITE_APP_API_URL}${video.thumbnailUrl}?t=${new Date(video.createdAt).getTime()}`}
+                      alt={video.id}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute bottom-3 left-3 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-sm p-1.5 border border-white/10">
+                      <PlayCircle
+                        className="text-white/90 group-hover:text-brand-primary transition-colors duration-300"
+                        size={20}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <PlayCircle
+                      className="text-white/20 group-hover:text-brand-primary group-hover:scale-110 transition-all duration-300"
+                      size={64}
+                    />
+                  </div>
+                )}
                 <div className="absolute top-3 right-3">
                   <span
                     className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full backdrop-blur-md border ${

@@ -1,12 +1,12 @@
 package ffmpeg
 
 import (
+	"context"
 	"fmt"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"time"
-	"context"
 
 	"labbase-streaming/backend/config"
 )
@@ -40,6 +40,31 @@ func (e *Encoder) ConvertToHLS(inputPath, outputDir string) error {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("ffmpeg error: %v, output: %s", err, string(output))
+	}
+
+	return nil
+}
+
+func (e *Encoder) GenerateThumbnail(inputPath, outputPath string) error {
+	// Use 2 seconds to get past most loading screens/intros.
+	// Placing -ss before -i is faster for local files.
+	args := []string{
+		"-ss", "2",
+		"-i", inputPath,
+		"-frames:v", "1",
+		"-q:v", "2",
+		"-an",
+		"-y",
+		outputPath,
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("ffmpeg thumbnail error: %v, output: %s", err, string(output))
 	}
 
 	return nil

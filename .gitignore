@@ -11,8 +11,11 @@ dist-ssr/
 # Videos (Media storage)
 /backend/@videos/raw/*
 /backend/@videos/hls/*
+/backend/@videos/thumbs/*
 !/backend/@videos/raw/.gitkeep
 !/backend/@videos/hls/.gitkeep
+!/backend/@videos/thumbs/.gitkeep
+
 
 # IDEs
 .vscode/

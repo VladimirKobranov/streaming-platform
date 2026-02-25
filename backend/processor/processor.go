@@ -47,11 +47,24 @@ func (p *Processor) LoadExistingVideos() {
 			Path:      p.storage.GetHLSPath(id),
 			CreatedAt: time.Now(),
 		}
+
+		// Check if thumbnail exists, if not generate it from HLS
+		thumbnailPath := p.storage.GetThumbnailPath(id)
+		if _, err := os.Stat(thumbnailPath); os.IsNotExist(err) {
+			log.Printf("Thumbnail missing for video %s, generating from HLS...", id)
+			go func(vid string, tPath string) {
+				hlsManifest := p.storage.GetHLSPath(vid) + "/master.m3u8"
+				if err := p.encoder.GenerateThumbnail(hlsManifest, tPath); err != nil {
+					log.Printf("failed to generate thumbnail for existing video %s: %v", vid, err)
+				}
+			}(id, thumbnailPath)
+		}
 	}
 	if len(ids) > 0 {
 		log.Printf("Loaded %d existing videos from storage", len(ids))
 	}
 }
+
 
 func (p *Processor) CreateVideo(id string) *models.Video {
 	p.mu.Lock()
@@ -93,6 +106,7 @@ func (p *Processor) ProcessVideo(id string) {
 
 		inputPath := p.storage.GetRawPath(id)
 		outputDir := p.storage.GetHLSPath(id)
+		thumbnailPath := p.storage.GetThumbnailPath(id)
 
 		if err := p.storage.CreateHLSDir(id); err != nil {
 			log.Printf("failed to create HLS dir for %s: %v", id, err)
@@ -103,6 +117,10 @@ func (p *Processor) ProcessVideo(id string) {
 			}
 			p.mu.Unlock()
 			return
+		}
+
+		if err := p.encoder.GenerateThumbnail(inputPath, thumbnailPath); err != nil {
+			log.Printf("failed to generate thumbnail for %s: %v", id, err)
 		}
 
 		if err := p.encoder.ConvertToHLS(inputPath, outputDir); err != nil {
