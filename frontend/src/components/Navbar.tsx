@@ -3,57 +3,13 @@ import { PlayCircle } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <nav
-      style={{
-        padding: "0.75rem 2rem",
-        borderBottom: "1px solid rgba(255,255,255,0.1)",
-        background: "rgba(15,23,42,0.8)",
-        backdropFilter: "blur(12px)",
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
-      }}
-    >
-      <div
-        className="container"
-        style={{
-          padding: 0,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Link
-          to="/"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            textDecoration: "none",
-            color: "inherit",
-          }}
-        >
-          <div
-            style={{
-              background: "var(--primary-color)",
-              padding: "0.5rem",
-              borderRadius: "0.75rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <PlayCircle size={24} color="#0f172a" />
+    <nav className="sticky top-0 z-10 px-8 py-3 bg-brand-bg/80 backdrop-blur-xl border-b border-white/10">
+      <div className="container flex justify-between items-center !px-0">
+        <Link to="/" className="flex items-center gap-3 no-underline group">
+          <div className="bg-brand-primary p-2 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110">
+            <PlayCircle size={24} className="text-brand-bg" />
           </div>
-          <span
-            style={{
-              fontSize: "1.25rem",
-              fontWeight: 800,
-              background: "linear-gradient(to right, #38bdf8, #818cf8)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
+          <span className="text-xl font-extrabold bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent">
             LabStream
           </span>
         </Link>

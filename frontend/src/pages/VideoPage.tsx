@@ -77,73 +77,25 @@ export default function VideoPage() {
   }, [status, id]);
 
   return (
-    <div className="container animate-fade">
-      <div
-        className="card"
-        style={{
-          padding: "0.75rem",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+    <div className="container animate-fade mt-6">
+      <div className="card !p-3 overflow-hidden flex flex-col min-h-[400px]">
         {status === "loading" && (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            <Loader2
-              className="animate-spin"
-              size={48}
-              color="var(--primary-color)"
-            />
+          <div className="flex-1 flex flex-col items-center justify-center gap-4">
+            <Loader2 className="animate-spin text-brand-primary" size={48} />
             <p className="text-secondary">Checking video status...</p>
           </div>
         )}
 
         {status === "processing" && !error && (
-          <div style={{ position: "relative", flex: 1 }}>
+          <div className="relative flex-1">
             <video
               ref={videoRef}
               controls
-              style={{
-                width: "100%",
-                borderRadius: "0.5rem",
-                background: "#000",
-                maxHeight: "65vh",
-              }}
+              className="w-full rounded-lg bg-black max-h-[65vh]"
             />
-            <div
-              style={{
-                position: "absolute",
-                top: "1rem",
-                right: "1rem",
-                background: "rgba(0,0,0,0.6)",
-                padding: "0.5rem 1rem",
-                borderRadius: "2rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                backdropFilter: "blur(4px)",
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
-            >
-              <div
-                className="animate-pulse"
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  background: "var(--primary-color)",
-                }}
-              />
-              <span style={{ fontSize: "0.75rem", fontWeight: 600 }}>
+            <div className="absolute top-4 right-4 bg-black/60 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-md border border-white/10">
+              <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+              <span className="text-xs font-semibold">
                 Streaming while processing...
               </span>
             </div>
@@ -154,30 +106,16 @@ export default function VideoPage() {
           <video
             ref={videoRef}
             controls
-            style={{
-              width: "100%",
-              borderRadius: "0.5rem",
-              background: "#000",
-              maxHeight: "65vh",
-            }}
+            className="w-full rounded-lg bg-black max-h-[65vh]"
           />
         )}
 
         {status === "error" && (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            <AlertCircle size={48} color="var(--error-color)" />
+          <div className="flex-1 flex flex-col items-center justify-center gap-4">
+            <AlertCircle size={48} className="text-brand-error" />
             <p>{error}</p>
             <button
-              className="btn-secondary"
+              className="btn-secondary px-6 py-2 rounded-lg"
               onClick={() => window.location.reload()}
             >
               Retry
@@ -186,16 +124,9 @@ export default function VideoPage() {
         )}
       </div>
 
-      <div
-        style={{
-          marginTop: "2rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="mt-8 flex justify-between items-center">
         <div>
-          <h2 style={{ marginBottom: "0.25rem" }}>Video ID: {id}</h2>
+          <h2 className="mb-1">Video ID: {id}</h2>
           <p className="text-secondary">
             {status === "processing"
               ? "Processing in progress... This may affect historical seeking."

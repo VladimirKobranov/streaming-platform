@@ -56,35 +56,19 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="container animate-fade" style={{ marginTop: "1.5rem" }}>
-      <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+    <div className="container animate-fade mt-6">
+      <div className="text-center mb-12">
         <h1>Upload & Stream</h1>
         <p className="text-secondary">
           Anonymous, high-quality, instant HLS streaming.
         </p>
       </div>
 
-      <div className="card" style={{ maxWidth: "600px", margin: "0 auto" }}>
+      <div className="card max-w-xl mx-auto">
         {!result ? (
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "2rem" }}
-          >
+          <div className="flex flex-col gap-8">
             <div
-              style={{
-                border: "2px dashed rgba(255,255,255,0.1)",
-                borderRadius: "1rem",
-                padding: "3rem 2rem",
-                textAlign: "center",
-                background: "rgba(255,255,255,0.02)",
-                cursor: "pointer",
-                transition: "var(--transition)",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.borderColor = "var(--primary-color)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")
-              }
+              className="border-2 border-dashed border-white/10 rounded-2xl p-12 text-center bg-white/[0.02] cursor-pointer transition-all hover:border-brand-primary"
               onClick={() => document.getElementById("fileInput")?.click()}
             >
               <input
@@ -95,34 +79,20 @@ export default function UploadPage() {
                 onChange={handleFileChange}
               />
               {file ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "1rem",
-                  }}
-                >
-                  <FileVideo size={48} color="var(--primary-color)" />
+                <div className="flex flex-col items-center gap-4">
+                  <FileVideo size={48} className="text-brand-primary" />
                   <div>
-                    <p style={{ fontWeight: 600 }}>{file.name}</p>
+                    <p className="font-semibold">{file.name}</p>
                     <p className="text-secondary">
                       {(file.size / (1024 * 1024)).toFixed(2)} MB
                     </p>
                   </div>
                 </div>
               ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "1rem",
-                  }}
-                >
-                  <Upload size={48} className="text-secondary" />
+                <div className="flex flex-col items-center gap-4">
+                  <Upload size={48} className="text-brand-text-secondary" />
                   <div>
-                    <p style={{ fontWeight: 600 }}>Click or drag to upload</p>
+                    <p className="font-semibold">Click or drag to upload</p>
                     <p className="text-secondary">
                       MP4, MOV, MKV, WEBM (Max 1GB)
                     </p>
@@ -132,22 +102,13 @@ export default function UploadPage() {
             </div>
 
             {error && (
-              <p
-                style={{
-                  color: "var(--error-color)",
-                  fontSize: "0.875rem",
-                  textAlign: "center",
-                }}
-              >
-                {error}
-              </p>
+              <p className="text-brand-error text-sm text-center">{error}</p>
             )}
 
             <button
-              className="btn"
+              className="btn w-full py-4"
               disabled={!file || uploading}
               onClick={handleUpload}
-              style={{ padding: "1rem" }}
             >
               {uploading ? (
                 <>
@@ -163,25 +124,8 @@ export default function UploadPage() {
             </button>
           </div>
         ) : (
-          <div
-            style={{
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              gap: "1.5rem",
-              padding: "1rem 0",
-            }}
-          >
-            <div
-              style={{
-                background: "rgba(34, 197, 94, 0.1)",
-                color: "var(--success-color)",
-                padding: "1rem",
-                borderRadius: "1rem",
-                display: "inline-flex",
-                alignSelf: "center",
-              }}
-            >
+          <div className="text-center flex flex-col gap-6 py-4">
+            <div className="bg-brand-success/10 text-brand-success p-4 rounded-2xl inline-flex self-center">
               <CheckCircle size={48} />
             </div>
             <h2>Successfully Uploaded!</h2>
@@ -189,42 +133,20 @@ export default function UploadPage() {
               Your video is being processed. You can share the link below:
             </p>
 
-            <div
-              style={{
-                background: "rgba(0,0,0,0.2)",
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "1rem",
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
-            >
-              <code
-                style={{
-                  flex: 1,
-                  textAlign: "left",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
+            <div className="bg-black/20 p-4 rounded-lg flex items-center gap-4 border border-white/10">
+              <code className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">
                 {window.location.origin}
                 {result.url}
               </code>
               <button
                 onClick={copyToClipboard}
-                className="btn-secondary"
-                style={{ padding: "0.5rem", borderRadius: "0.5rem" }}
+                className="btn-secondary p-2 rounded-lg"
               >
                 <Copy size={18} />
               </button>
             </div>
 
-            <a
-              href={result.url}
-              className="btn"
-              style={{ textDecoration: "none" }}
-            >
+            <a href={result.url} className="btn no-underline">
               Go to Video Page
             </a>
           </div>

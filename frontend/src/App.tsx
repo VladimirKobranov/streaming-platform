@@ -7,20 +7,13 @@ function App() {
   return (
     <Router>
       <Navbar />
-      <main style={{ flex: 1 }}>
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<UploadPage />} />
           <Route path="/v/:id" element={<VideoPage />} />
         </Routes>
       </main>
-      <footer
-        style={{
-          padding: "1.5rem",
-          textAlign: "center",
-          opacity: 0.5,
-          fontSize: "0.875rem",
-        }}
-      >
+      <footer className="p-6 text-center opacity-50 text-sm border-t border-white/5">
         &copy; {new Date().getFullYear()} LabStream • Private Streaming Service
       </footer>
     </Router>
