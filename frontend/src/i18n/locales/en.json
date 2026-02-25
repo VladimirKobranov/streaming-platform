@@ -3,7 +3,8 @@
     "app_name": "LabStream",
     "footer": "LabStream • Private Streaming Service",
     "retry": "Retry",
-    "copy_success": "Link copied to clipboard!"
+    "copy_success": "Link copied to clipboard!",
+    "loading": "Loading..."
   },
   "upload": {
     "title": "Upload & Stream",
@@ -25,5 +26,12 @@
     "status_ready": "Ready for playback.",
     "error_not_found": "Video not found",
     "error_failed": "Failed to load video"
+  },
+  "videos": {
+    "nav_link": "Videos",
+    "title": "All Videos",
+    "subtitle": "List of all uploaded streams",
+    "no_videos": "No videos found",
+    "upload_first": "Upload your first video to see it here."
   }
 }

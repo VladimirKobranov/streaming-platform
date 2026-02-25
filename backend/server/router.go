@@ -20,6 +20,7 @@ func (s *Server) Router() http.Handler {
 		r.Get("/health", s.handleHealth)
 		r.Post("/upload", s.handleUpload)
 		r.Get("/video/{id}", s.handleGetVideo)
+		r.Get("/videos", s.handleListVideos)
 	})
 
 	hlsDir := filepath.Join(s.storage.GetBaseDir(), "hls")

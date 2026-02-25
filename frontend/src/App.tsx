@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Navbar from "./components/Navbar";
 import UploadPage from "./pages/UploadPage";
 import VideoPage from "./pages/VideoPage";
+import VideoListPage from "./pages/VideoListPage";
 import log from "./etc/utils";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<UploadPage />} />
+          <Route path="/videos" element={<VideoListPage />} />
           <Route path="/v/:id" element={<VideoPage />} />
         </Routes>
       </main>

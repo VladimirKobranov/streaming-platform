@@ -3,7 +3,8 @@
     "app_name": "LabStream",
     "footer": "LabStream • プライベートストリーミングサービス",
     "retry": "再試行",
-    "copy_success": "リンクをクリップボードにコピーしました！"
+    "copy_success": "リンクをクリップボードにコピーしました！",
+    "loading": "読み込み中..."
   },
   "upload": {
     "title": "アップロード & ストリーム",
@@ -25,5 +26,12 @@
     "status_ready": "再生準備完了。",
     "error_not_found": "ビデオが見つかりません",
     "error_failed": "ビデオの読み込みに失敗しました"
+  },
+  "videos": {
+    "nav_link": "ビデオ一覧",
+    "title": "すべてのビデオ",
+    "subtitle": "アップロードされたストリーム一覧",
+    "no_videos": "ビデオが見つかりません",
+    "upload_first": "最初のビデオをアップロードして、ここに表示させましょう。"
   }
 }

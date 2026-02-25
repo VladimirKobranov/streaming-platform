@@ -58,7 +58,15 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="relative" ref={dropdownRef}>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/videos"
+            className="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity no-underline"
+          >
+            {t("videos.nav_link", "Videos")}
+          </Link>
+
+          <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-sm font-medium group"
@@ -96,6 +104,7 @@ export default function Navbar() {
           )}
         </div>
       </div>
-    </nav>
+    </div>
+  </nav>
   );
 }

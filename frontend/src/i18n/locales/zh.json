@@ -3,7 +3,8 @@
     "app_name": "LabStream",
     "footer": "LabStream • 演示串流服务",
     "retry": "重试",
-    "copy_success": "链接已复制到剪贴板！"
+    "copy_success": "链接已复制到剪贴板！",
+    "loading": "加载中..."
   },
   "upload": {
     "title": "上传与串流",
@@ -25,5 +26,12 @@
     "status_ready": "准备播放。",
     "error_not_found": "未找到视频",
     "error_failed": "视频加载失败"
+  },
+  "videos": {
+    "nav_link": "视频",
+    "title": "所有视频",
+    "subtitle": "所有上传的串流列表",
+    "no_videos": "未找到视频",
+    "upload_first": "上传您的第一个视频以在此处查看。"
   }
 }

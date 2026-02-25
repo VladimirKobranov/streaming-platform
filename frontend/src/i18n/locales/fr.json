@@ -3,7 +3,8 @@
     "app_name": "LabStream",
     "footer": "LabStream • Service de streaming privé",
     "retry": "Réessayer",
-    "copy_success": "Lien copié dans le presse-papiers !"
+    "copy_success": "Lien copié dans le presse-papiers !",
+    "loading": "Chargement..."
   },
   "upload": {
     "title": "Télécharger & Diffuser",
@@ -25,5 +26,12 @@
     "status_ready": "Prêt pour la lecture.",
     "error_not_found": "Vidéo non trouvée",
     "error_failed": "Échec du chargement de la vidéo"
+  },
+  "videos": {
+    "nav_link": "Vidéos",
+    "title": "Toutes les Vidéos",
+    "subtitle": "Liste de tous les streams téléchargés",
+    "no_videos": "Aucune vidéo trouvée",
+    "upload_first": "Téléchargez votre première vidéo pour la voir ici."
   }
 }

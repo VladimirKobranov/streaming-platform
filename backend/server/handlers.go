@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"sort"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -80,4 +81,33 @@ func (s *Server) handleGetVideo(w http.ResponseWriter, r *http.Request) {
 		"streamUrl": fmt.Sprintf("/streams/%s/master.m3u8", video.ID),
 		"createdAt": video.CreatedAt,
 	})
+}
+
+func (s *Server) handleListVideos(w http.ResponseWriter, r *http.Request) {
+	videos := s.processor.ListVideos()
+
+	// Sort videos by CreatedAt descending
+	sort.Slice(videos, func(i, j int) bool {
+		return videos[i].CreatedAt.After(videos[j].CreatedAt)
+	})
+
+	type VideoResponse struct {
+		ID        string `json:"id"`
+		Status    string `json:"status"`
+		StreamURL string `json:"streamUrl"`
+		CreatedAt string `json:"createdAt"`
+	}
+
+	response := make([]VideoResponse, 0, len(videos))
+	for _, v := range videos {
+		response = append(response, VideoResponse{
+			ID:        v.ID,
+			Status:    string(v.Status),
+			StreamURL: fmt.Sprintf("/streams/%s/master.m3u8", v.ID),
+			CreatedAt: v.CreatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

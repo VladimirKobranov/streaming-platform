@@ -73,6 +73,17 @@ func (p *Processor) GetVideo(id string) (*models.Video, bool) {
 	return v, ok
 }
 
+func (p *Processor) ListVideos() []*models.Video {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+
+	videos := make([]*models.Video, 0, len(p.videos))
+	for _, v := range p.videos {
+		videos = append(videos, v)
+	}
+	return videos
+}
+
 func (p *Processor) ProcessVideo(id string) {
 	go func() {
 		inputPath := p.storage.GetRawPath(id)

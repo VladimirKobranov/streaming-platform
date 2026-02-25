@@ -16,6 +16,8 @@ export default function VideoPage() {
 
   useEffect(() => {
     let pollInterval: number;
+    setStatus("loading");
+    setError(null);
 
     const checkStatus = async () => {
       try {

@@ -3,14 +3,15 @@
     "app_name": "LabStream",
     "footer": "LabStream • Privater Streaming-Dienst",
     "retry": "Wiederholen",
-    "copy_success": "Link in die Zwischenablage kopiert!"
+    "copy_success": "Link in Zwischenablage kopiert!",
+    "loading": "Laden..."
   },
   "upload": {
     "title": "Hochladen & Streamen",
-    "subtitle": "Anonymes, hochwertiges, sofortiges HLS-Streaming.",
+    "subtitle": "Anonym, hohe Qualität, sofortiges HLS-Streaming.",
     "dropzone_prompt": "Klicken oder ziehen zum Hochladen",
     "dropzone_help": "MP4, MOV, MKV, WEBM (Max 1GB)",
-    "error_size": "Dateigröße überschreitet 1GB-Limit",
+    "error_size": "Dateigröße überschreitet 1GB Limit",
     "btn_uploading": "Wird hochgeladen...",
     "btn_start": "Verarbeitung starten",
     "success_title": "Erfolgreich hochgeladen!",
@@ -25,5 +26,12 @@
     "status_ready": "Bereit zur Wiedergabe.",
     "error_not_found": "Video nicht gefunden",
     "error_failed": "Video konnte nicht geladen werden"
+  },
+  "videos": {
+    "nav_link": "Videos",
+    "title": "Alle Videos",
+    "subtitle": "Liste aller hochgeladenen Streams",
+    "no_videos": "Keine Videos gefunden",
+    "upload_first": "Laden Sie Ihr erstes Video hoch, um es hier zu sehen."
   }
 }
