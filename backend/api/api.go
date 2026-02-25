@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"labbase-streaming/backend/internal/processor"
-	"labbase-streaming/backend/internal/storage"
+	"labbase-streaming/backend/processor"
+	"labbase-streaming/backend/storage"
 
 	"github.com/google/uuid"
 )

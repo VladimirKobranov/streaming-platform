@@ -44,3 +44,20 @@ func (s *Storage) CreateHLSDir(id string) error {
 func (s *Storage) GetBaseDir() string {
 	return s.baseDir
 }
+
+// List all videos in the storage (dev purpose)
+func (s *Storage) ListVideos() ([]string, error) {
+	hlsPath := filepath.Join(s.baseDir, "hls")
+	entries, err := os.ReadDir(hlsPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var ids []string
+	for _, entry := range entries {
+		if entry.IsDir() {
+			ids = append(ids, entry.Name())
+		}
+	}
+	return ids, nil
+}

@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"labbase-streaming/backend/internal/ffmpeg"
-	"labbase-streaming/backend/internal/models"
-	"labbase-streaming/backend/internal/storage"
+	"labbase-streaming/backend/ffmpeg"
+	"labbase-streaming/backend/models"
+	"labbase-streaming/backend/storage"
 )
 
 type Processor struct {
@@ -18,10 +18,35 @@ type Processor struct {
 }
 
 func NewProcessor(s *storage.Storage, e *ffmpeg.Encoder) *Processor {
-	return &Processor{
+	p := &Processor{
 		storage: s,
 		encoder: e,
 		videos:  make(map[string]*models.Video),
+	}
+	p.LoadExistingVideos()
+	return p
+}
+
+func (p *Processor) LoadExistingVideos() {
+	ids, err := p.storage.ListVideos()
+	if err != nil {
+		log.Printf("failed to list existing videos: %v", err)
+		return
+	}
+
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	for _, id := range ids {
+		p.videos[id] = &models.Video{
+			ID:        id,
+			Status:    models.StatusReady,
+			Path:      p.storage.GetHLSPath(id),
+			CreatedAt: time.Now(), // Мы не храним точное время без БД, ставим текущее
+		}
+	}
+	if len(ids) > 0 {
+		log.Printf("Loaded %d existing videos from storage", len(ids))
 	}
 }
 

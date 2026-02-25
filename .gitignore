@@ -9,10 +9,10 @@ dist-ssr/
 *.local
 
 # Videos (Media storage)
-/videos/raw/*
-/videos/hls/*
-!/videos/raw/.gitkeep
-!/videos/hls/.gitkeep
+/backend/@videos/raw/*
+/backend/@videos/hls/*
+!/backend/@videos/raw/.gitkeep
+!/backend/@videos/hls/.gitkeep
 
 # IDEs
 .vscode/

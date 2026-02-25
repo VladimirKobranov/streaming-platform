@@ -6,10 +6,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"labbase-streaming/backend/internal/api"
-	"labbase-streaming/backend/internal/ffmpeg"
-	"labbase-streaming/backend/internal/processor"
-	"labbase-streaming/backend/internal/storage"
+	"labbase-streaming/backend/api"
+	"labbase-streaming/backend/ffmpeg"
+	"labbase-streaming/backend/processor"
+	"labbase-streaming/backend/storage"
 )
 
 func main() {
@@ -19,11 +19,11 @@ func main() {
 		log.Fatalf("failed to get working directory: %v", err)
 	}
 
-	// Assuming the app runs from project root or backend dir
-	// Let's make it flexible
-	baseDir := filepath.Join(cwd, "..", "videos")
+	// The @videos directory is now inside the backend folder
+	baseDir := filepath.Join(cwd, "@videos")
+	// Fallback if running from project root
 	if _, err := os.Stat(baseDir); os.IsNotExist(err) {
-		baseDir = filepath.Join(cwd, "videos") // if running from root
+		baseDir = filepath.Join(cwd, "backend", "@videos")
 	}
 
 	s, err := storage.NewStorage(baseDir)
