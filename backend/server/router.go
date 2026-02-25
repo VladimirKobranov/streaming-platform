@@ -19,10 +19,7 @@ func (s *Server) Router() http.Handler {
 
 	r.Route("/api", func(r chi.Router) {
 		r.Post("/upload", s.handleUpload)
-		r.Get("/videos", s.handleListVideos)
 		r.Get("/video/{id}", s.handleGetVideo)
-		r.Get("/video/{id}/status", s.handleVideoStatus)
-		r.Delete("/video/{id}", s.handleDeleteVideo)
 	})
 
 	hlsDir := strings.TrimSuffix(s.storage.GetBaseDir(), string(os.PathSeparator)) + "/hls"
@@ -34,7 +31,7 @@ func (s *Server) Router() http.Handler {
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 		if r.Method == "OPTIONS" {

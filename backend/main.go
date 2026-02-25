@@ -29,7 +29,7 @@ func main() {
 		log.Fatalf("failed to initialize storage: %v", err)
 	}
 
-	e := ffmpeg.NewEncoder()
+	e := ffmpeg.NewEncoder(&cfg.FFmpeg)
 	p := processor.NewProcessor(s, e)
 	srv := server.NewServer(p, s, cfg)
 

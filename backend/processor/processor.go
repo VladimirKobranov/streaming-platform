@@ -2,7 +2,6 @@ package processor
 
 import (
 	"log"
-	"os"
 	"sync"
 	"time"
 
@@ -43,7 +42,7 @@ func (p *Processor) LoadExistingVideos() {
 			ID:        id,
 			Status:    models.StatusReady,
 			Path:      p.storage.GetHLSPath(id),
-			CreatedAt: time.Now(), // Мы не храним точное время без БД, ставим текущее
+			CreatedAt: time.Now(),
 		}
 	}
 	if len(ids) > 0 {
@@ -96,41 +95,4 @@ func (p *Processor) ProcessVideo(id string) {
 
 		log.Printf("Video %s processed successfully", id)
 	}()
-}
-
-func (p *Processor) ListVideos() []*models.Video {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-
-	videos := make([]*models.Video, 0, len(p.videos))
-	for _, v := range p.videos {
-		videos = append(videos, v)
-	}
-	return videos
-}
-
-func (p *Processor) DeleteVideo(id string) bool {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-
-	video, ok := p.videos[id]
-	if !ok {
-		return false
-	}
-
-	if err := os.RemoveAll(video.Path); err != nil {
-		log.Printf("failed to delete video files for %s: %v", id, err)
-	}
-
-	rawPath := p.storage.GetRawPath(id)
-	if err := os.Remove(rawPath); err != nil {
-		log.Printf("failed to delete raw file for %s: %v", id, err)
-	}
-
-	delete(p.videos, id)
-	return true
-}
-
-func (p *Processor) GetStorage() *storage.Storage {
-	return p.storage
 }
