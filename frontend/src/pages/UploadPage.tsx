@@ -41,7 +41,7 @@ export default function UploadPage() {
 
     try {
       log.d("Sending POST request to /api/upload...");
-      const response = await fetch("http://localhost:8080/api/upload", {
+      const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/api/upload`, {
         method: "POST",
         body: formData,
       });

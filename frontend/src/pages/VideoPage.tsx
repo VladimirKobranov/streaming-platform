@@ -18,7 +18,9 @@ export default function VideoPage() {
     const checkStatus = async () => {
       try {
         log.d("Polling video status for ID:", id);
-        const response = await fetch(`http://localhost:8080/api/video/${id}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_APP_API_URL}/api/video/${id}`,
+        );
         if (!response.ok) {
           log.e(
             "Status API call failed for ID:",
@@ -58,7 +60,7 @@ export default function VideoPage() {
 
   useEffect(() => {
     if ((status === "ready" || status === "processing") && videoRef.current) {
-      const hlsUrl = `http://localhost:8080/streams/${id}/master.m3u8`;
+      const hlsUrl = `${import.meta.env.VITE_APP_API_URL}/streams/${id}/master.m3u8`;
 
       if (Hls.isSupported()) {
         log.i("Initializing HLS.js player for video:", id);
