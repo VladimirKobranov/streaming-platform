@@ -98,6 +98,118 @@ export default function UploadPage() {
     }
   };
 
+  const renderDropzone = () => (
+    <div
+      className="border-2 border-dashed border-white/10 rounded-2xl p-12 text-center bg-white/[0.02] cursor-pointer transition-all hover:border-brand-primary"
+      onClick={() => document.getElementById("fileInput")?.click()}
+    >
+      <input
+        type="file"
+        id="fileInput"
+        hidden
+        accept=".mp4,.mov,.mkv,.webm"
+        onChange={handleFileChange}
+      />
+      {file ? (
+        <div className="flex flex-col items-center gap-4">
+          <FileVideo size={48} className="text-brand-primary" />
+          <div>
+            <p className="font-semibold">{file.name}</p>
+            <p className="text-secondary">
+              {(file.size / (1024 * 1024)).toFixed(2)} MB
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-4">
+          <Upload size={48} className="text-brand-text-secondary" />
+          <div>
+            <p className="font-semibold">{t("upload.dropzone_prompt")}</p>
+            <p className="text-secondary">{t("upload.dropzone_help")}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderUploadStatus = () => {
+    if (uploading) {
+      return (
+        <div className="flex flex-col gap-3">
+          <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+            <div
+              className="bg-brand-primary h-full transition-all duration-300 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-secondary">{progress}% uploaded</span>
+            <button
+              onClick={cancelUpload}
+              className="text-sm text-brand-error hover:underline"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <button
+        className="btn w-full py-4"
+        disabled={!file}
+        onClick={handleUpload}
+      >
+        <Upload size={20} />
+        {t("upload.btn_start")}
+      </button>
+    );
+  };
+
+  const renderSuccess = (res: { id: string; url: string }) => (
+    <div className="text-center flex flex-col gap-6 py-4">
+      <div className="bg-brand-success/10 text-brand-success p-4 rounded-2xl inline-flex self-center">
+        <CheckCircle size={48} />
+      </div>
+      <h2>{t("upload.success_title")}</h2>
+      <p className="text-secondary">{t("upload.success_subtitle")}</p>
+
+      <div className="bg-black/20 p-4 rounded-lg flex items-center gap-4 border border-white/10">
+        <code className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">
+          {window.location.origin}
+          {res.url}
+        </code>
+        <button
+          onClick={copyToClipboard}
+          className="btn-secondary p-2 rounded-lg"
+        >
+          <Copy size={18} />
+        </button>
+      </div>
+
+      <a href={res.url} className="btn no-underline">
+        {t("upload.btn_go_to_video")}
+      </a>
+    </div>
+  );
+
+  const renderContent = () => {
+    if (result) return renderSuccess(result);
+
+    return (
+      <div className="flex flex-col gap-8">
+        {renderDropzone()}
+
+        {error && (
+          <p className="text-brand-error text-sm text-center">{error}</p>
+        )}
+
+        {renderUploadStatus()}
+      </div>
+    );
+  };
+
   return (
     <div className="container animate-fade mt-6">
       <div className="text-center mb-12">
@@ -105,107 +217,7 @@ export default function UploadPage() {
         <p className="text-secondary">{t("upload.subtitle")}</p>
       </div>
 
-      <div className="card max-w-xl mx-auto">
-        {!result ? (
-          <div className="flex flex-col gap-8">
-            <div
-              className="border-2 border-dashed border-white/10 rounded-2xl p-12 text-center bg-white/[0.02] cursor-pointer transition-all hover:border-brand-primary"
-              onClick={() => document.getElementById("fileInput")?.click()}
-            >
-              <input
-                type="file"
-                id="fileInput"
-                hidden
-                accept=".mp4,.mov,.mkv,.webm"
-                onChange={handleFileChange}
-              />
-              {file ? (
-                <div className="flex flex-col items-center gap-4">
-                  <FileVideo size={48} className="text-brand-primary" />
-                  <div>
-                    <p className="font-semibold">{file.name}</p>
-                    <p className="text-secondary">
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-4">
-                  <Upload size={48} className="text-brand-text-secondary" />
-                  <div>
-                    <p className="font-semibold">
-                      {t("upload.dropzone_prompt")}
-                    </p>
-                    <p className="text-secondary">
-                      {t("upload.dropzone_help")}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {error && (
-              <p className="text-brand-error text-sm text-center">{error}</p>
-            )}
-
-            {uploading ? (
-              <div className="flex flex-col gap-3">
-                <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-                  <div
-                    className="bg-brand-primary h-full transition-all duration-300 ease-out"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-secondary">
-                    {progress}% uploaded
-                  </span>
-                  <button
-                    onClick={cancelUpload}
-                    className="text-sm text-brand-error hover:underline"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                className="btn w-full py-4"
-                disabled={!file}
-                onClick={handleUpload}
-              >
-                <Upload size={20} />
-                {t("upload.btn_start")}
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="text-center flex flex-col gap-6 py-4">
-            <div className="bg-brand-success/10 text-brand-success p-4 rounded-2xl inline-flex self-center">
-              <CheckCircle size={48} />
-            </div>
-            <h2>{t("upload.success_title")}</h2>
-            <p className="text-secondary">{t("upload.success_subtitle")}</p>
-
-            <div className="bg-black/20 p-4 rounded-lg flex items-center gap-4 border border-white/10">
-              <code className="flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap">
-                {window.location.origin}
-                {result.url}
-              </code>
-              <button
-                onClick={copyToClipboard}
-                className="btn-secondary p-2 rounded-lg"
-              >
-                <Copy size={18} />
-              </button>
-            </div>
-
-            <a href={result.url} className="btn no-underline">
-              {t("upload.btn_go_to_video")}
-            </a>
-          </div>
-        )}
-      </div>
+      <div className="card max-w-xl mx-auto">{renderContent()}</div>
     </div>
   );
 }
