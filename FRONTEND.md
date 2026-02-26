@@ -6,10 +6,10 @@ Video streaming frontend for uploading, listing and viewing videos in HLS format
 
 ## Tech Stack
 
-- **React** 18+ with TypeScript
+- **React** 19 with TypeScript
 - **React Router** - routing
 - **Hls.js** - HLS video playback
-- **Tailwind CSS** - styling
+- **Tailwind CSS** 4 - styling
 - **i18next** - internationalization
 - **Vite** - build tool
 

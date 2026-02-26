@@ -6,10 +6,11 @@ Video streaming backend that processes uploaded videos into HLS format for strea
 
 ## Tech Stack
 
-- **Go** 1.24+
-- **Chi** - HTTP router
-- **FFmpeg** - video encoding
-- **YAML** - configuration
+- **Go** 1.24.4
+- **Chi v5** - HTTP router
+- **Google UUID** - unique identifier generation
+- **YAML v3** - configuration parsing
+- **FFmpeg** - video encoding & thumbnail extraction
 
 ## Project Structure
 
@@ -82,6 +83,7 @@ List all videos.
     "id": "uuid",
     "status": "ready" | "processing" | "error",
     "streamUrl": "/streams/{id}/master.m3u8",
+    "thumbnailUrl": "/thumbnails/{id}.jpg",
     "createdAt": "2024-01-01 15:04:05"
   }
 ]
@@ -98,6 +100,7 @@ Get video info and status.
   "id": "uuid",
   "status": "ready" | "processing" | "error",
   "streamUrl": "/streams/{id}/master.m3u8",
+  "thumbnailUrl": "/thumbnails/{id}.jpg",
   "createdAt": "2024-01-01T00:00:00Z",
   "error": "optional error description"
 }
@@ -131,9 +134,9 @@ upload:
   max_size_mb: 1024
   allowed_extensions:
     - ".mp4"
-    - ".avi"
     - ".mov"
     - ".mkv"
+    - ".webm"
 
 ffmpeg:
   hls_time: 4
@@ -150,6 +153,7 @@ type Video struct {
     ID        string      // UUID
     Status    VideoStatus // "processing" | "ready" | "error"
     Path      string      // HLS directory path
+    Thumbnail string      // Thumbnail file path
     CreatedAt time.Time
 }
 ```

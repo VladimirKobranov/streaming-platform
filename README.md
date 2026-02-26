@@ -10,12 +10,13 @@ A minimal private video streaming service built with Go, React, and FFmpeg. Supp
 - **1GB Limit**: Large file support up to 1GB.
 
 ## Tech Stack
-- **Backend**: Go (standard library + uuid)
-- **Frontend**: React (Vite + TS), HLS.js, Lucide Icons
+- **Backend**: Go 1.24+ (Chi Router, Google UUID, YAML v3)
+- **Frontend**: React 19 (Vite, TypeScript, Tailwind CSS 4)
+- **Libraries**: HLS.js, Lucide Icons, React Router 7, i18next
 - **Processing**: FFmpeg
 
 ## Prerequisites
-- [Go](https://golang.org/dl/) (1.18+)
+- [Go](https://golang.org/dl/) (1.24+)
 - [Node.js](https://nodejs.org/) (20+)
 - [FFmpeg](https://ffmpeg.org/download.html) (must be in system PATH)
 
@@ -36,8 +37,14 @@ npm run dev
 ```
 The application will be available at `http://localhost:3000`.
 
-## Architecture
+## Documentation
+- [Architecture Overview](ARCHITECTURE.md) - Core logic and system design.
+- [Backend Details](BACKEND.md) - API endpoints and server structure.
+- [Frontend Details](FRONTEND.md) - UI components and client logic.
+
+## Project Structure
 - `/backend`: Go API and processor logic.
 - `/frontend`: React client code.
-- `/videos/raw`: Stores original uploaded files.
-- `/videos/hls`: Stores generated HLS segments and playlists.
+- `/backend/@videos/raw`: Temporary storage for original uploads (cleared after processing).
+- `/backend/@videos/hls`: Stores generated HLS segments and playlists.
+- `/backend/@videos/thumbs`: Video thumbnails.
